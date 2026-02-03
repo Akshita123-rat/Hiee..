@@ -33,13 +33,12 @@ body {
   position: relative;
 }
 
-h1 {
-  color: #ff4d6d;
-}
+h1 { color: #ff4d6d; }
+p { color: #444; }
 
 button {
-  padding: 12px 20px;
-  margin: 10px 0;
+  padding: 12px;
+  margin-top: 10px;
   width: 100%;
   border: none;
   border-radius: 25px;
@@ -47,10 +46,7 @@ button {
   cursor: pointer;
 }
 
-.yes {
-  background: #ff4d6d;
-  color: white;
-}
+.yes { background: #ff4d6d; color: white; }
 
 .no {
   background: #ddd;
@@ -59,9 +55,7 @@ button {
   top: 120px;
 }
 
-.option {
-  background: #ffe3e8;
-}
+.option { background: #ffe3e8; }
 
 /* Floating hearts */
 .heart {
@@ -83,22 +77,21 @@ button {
 <div id="app" class="center"></div>
 
 <script>
-/* QUESTIONS */
 const questions = [
   {
     q: "What's your idea of a perfect day together? 🌸",
     options: [
       "Binge-watching shows with snacks",
-      "Going on a spontaneous adventure",
-      "Having deep heart-to-heart talks",
-      "Just vibing and doing nothing together"
+      "Spontaneous adventure",
+      "Heart-to-heart talks",
+      "Just vibing together"
     ]
   },
   {
     q: "Pick our friendship anthem 🎵",
     options: [
       "You've Got a Friend in Me",
-      "Count on Me - Bruno Mars",
+      "Count on Me",
       "Lean on Me",
       "That's What Friends Are For"
     ]
@@ -107,51 +100,39 @@ const questions = [
     q: "What makes you smile the most? 😊",
     options: [
       "Unexpected compliments",
-      "Inside jokes only we understand",
-      "Surprise visits or calls",
-      "Thoughtful little gestures"
+      "Inside jokes",
+      "Surprise calls",
+      "Little gestures"
     ]
   }
 ];
 
-let stage = "valentine"; // valentine → welcome → questions → final → celebration
+let stage = "start";
 let index = 0;
 const app = document.getElementById("app");
 
 /* Floating hearts */
 setInterval(() => {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "💖";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}, 500);
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 6000);
+}, 600);
 
 function render() {
 
-  /* VALENTINE QUESTION */
-  if (stage === "valentine") {
+  /* START SCREEN */
+  if (stage === "start") {
     app.innerHTML = `
       <div class="card" id="card">
         <h1>💘 yourname, will you be my Valentine? 💘</h1>
-        <button class="yes" onclick="yesClick()">Yes ❤️</button>
+        <button class="yes" onclick="startQuestions()">Yes ❤️</button>
         <button class="no" id="noBtn">No 😢</button>
       </div>
     `;
-    moveNoButton();
-  }
-
-  /* WELCOME */
-  if (stage === "welcome") {
-    app.innerHTML = `
-      <div class="card">
-        <h1>💖 Yayyy! 💖</h1>
-        <p>I have something special for you…</p>
-        <button class="yes" onclick="start()">Continue 💕</button>
-      </div>
-    `;
+    moveNo();
   }
 
   /* QUESTIONS */
@@ -161,14 +142,14 @@ function render() {
       <div class="card">
         <h1>Question ${index + 1}/${questions.length}</h1>
         <p>${q.q}</p>
-        ${q.options.map(opt =>
-          `<button class="option" onclick="next()">${opt}</button>`
+        ${q.options.map(o =>
+          `<button class="option" onclick="nextQ()">${o}</button>`
         ).join("")}
       </div>
     `;
   }
 
-  /* FINAL QUESTION */
+  /* FINAL */
   if (stage === "final") {
     app.innerHTML = `
       <div class="card">
@@ -184,7 +165,7 @@ function render() {
     app.innerHTML = `
       <div class="card">
         <h1>🎉 Yayyyy! 🎉</h1>
-        <p>You just made my heart so happy 💕</p>
+        <p>You made my heart so happy 💕</p>
         <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
              style="width:220px;border-radius:15px;margin-top:15px;">
       </div>
@@ -192,47 +173,25 @@ function render() {
   }
 }
 
-/* Moving NO button */
-function moveNoButton() {
-  const noBtn = document.getElementById("noBtn");
+function moveNo() {
+  const btn = document.getElementById("noBtn");
   const card = document.getElementById("card");
-
   setInterval(() => {
-    const maxX = card.clientWidth - noBtn.offsetWidth;
-    const maxY = card.clientHeight - noBtn.offsetHeight;
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    btn.style.left = Math.random() * (card.clientWidth - btn.offsetWidth) + "px";
+    btn.style.top = Math.random() * (card.clientHeight - btn.offsetHeight) + "px";
   }, 700);
 }
 
-/* Actions */
-function yesClick() {
-  stage = "welcome";
-  render();
-}
-
-function start() {
+function startQuestions() {
   stage = "questions";
   render();
 }
 
-function next() {
-  if (index < questions.length - 1) {
-    index++;
-  } else {
-    stage = "final";
-  }
+function nextQ() {
+  index++;
+  if (index >= questions.length) stage = "final";
   render();
 }
 
-function celebrate() {
-  stage = "celebration";
-  render();
-}
-
-render();
-</script>
-
-</body>
-</html>
+function cel
 
