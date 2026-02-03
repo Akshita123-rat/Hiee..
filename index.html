@@ -28,6 +28,7 @@ body {
 }
 
 h1 { color: #ff4d6d; }
+p { color: #444; }
 
 button {
   padding: 12px;
@@ -40,6 +41,7 @@ button {
 }
 
 .yes { background: #ff4d6d; color: white; }
+.option { background: #ffe3e8; }
 
 .no {
   background: #ddd;
@@ -54,13 +56,13 @@ button {
 
 <div class="card" id="card">
   <h1>💘 yourname, will you be my Valentine? 💘</h1>
-  <button class="yes" onclick="yesClick()">Yes ❤️</button>
+  <button class="yes" onclick="showQuestion()">Yes ❤️</button>
   <button class="no" id="noBtn">No 😢</button>
 </div>
 
 <script>
-const noBtn = document.getElementById("noBtn");
 const card = document.getElementById("card");
+const noBtn = document.getElementById("noBtn");
 
 /* Move NO button */
 setInterval(() => {
@@ -70,8 +72,19 @@ setInterval(() => {
   noBtn.style.top = y + "px";
 }, 700);
 
-/* YES click */
-function yesClick() {
+/* Show question */
+function showQuestion() {
+  card.innerHTML = `
+    <h1>🌸 One Question 🌸</h1>
+    <p>What makes you smile the most?</p>
+    <button class="option" onclick="celebrate()">You 💕</button>
+    <button class="option" onclick="celebrate()">Little moments ✨</button>
+    <button class="option" onclick="celebrate()">Surprises 🎁</button>
+  `;
+}
+
+/* Final celebration */
+function celebrate() {
   document.body.innerHTML = `
     <div style="
       background:#ff9a9e;
@@ -84,8 +97,8 @@ function yesClick() {
       color:white;
       padding:20px;
     ">
-      <h1>💖 Yayyy! 💖</h1>
-      <p>You just made my day special 🥰</p>
+      <h1>🎉 Yayyy! 🎉</h1>
+      <p>You made my heart really happy 💖</p>
       <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
            style="width:220px;border-radius:15px;margin-top:15px;">
     </div>
@@ -95,5 +108,6 @@ function yesClick() {
 
 </body>
 </html>
+
 
 
