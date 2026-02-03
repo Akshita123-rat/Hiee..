@@ -14,6 +14,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .card {
@@ -21,7 +22,7 @@ body {
   padding: 30px;
   border-radius: 20px;
   width: 90%;
-  max-width: 360px;
+  max-width: 380px;
   text-align: center;
   position: relative;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -29,6 +30,14 @@ body {
 
 h1 { color: #ff4d6d; }
 p { color: #444; }
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
 
 button {
   padding: 12px;
@@ -47,7 +56,20 @@ button {
   background: #ddd;
   position: absolute;
   left: 20px;
-  top: 130px;
+  top: 160px;
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 22px;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-110vh); opacity: 0; }
 }
 </style>
 </head>
@@ -55,56 +77,37 @@ button {
 <body>
 
 <div class="card" id="card">
-  <h1>💘 yourname, will you be my Valentine? 💘</h1>
-  <button class="yes" onclick="startQuestions()">Yes ❤️</button>
+  <h1>💘 Will you be my Valentine? 💘</h1>
+  <input id="nameInput" placeholder="Enter your name 💕">
+  <button class="yes" onclick="start()">Yes ❤️</button>
   <button class="no" id="noBtn">No 😢</button>
 </div>
+
+<audio id="bgMusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
 
 <script>
 const card = document.getElementById("card");
 const noBtn = document.getElementById("noBtn");
+const music = document.getElementById("bgMusic");
+let name = "";
+let index = 0;
 
-/* QUESTIONS ARRAY */
 const questions = [
   {
     q: "What's your idea of a perfect day together? 🌸",
-    options: [
-      "Binge-watching shows with snacks",
-      "Spontaneous adventure",
-      "Heart-to-heart talks",
-      "Just vibing together"
-    ]
+    options: ["Movies & snacks", "Adventure", "Deep talks", "Just vibing"]
   },
   {
-    q: "Pick our friendship anthem 🎵",
-    options: [
-      "You've Got a Friend in Me",
-      "Count on Me",
-      "Lean on Me",
-      "That's What Friends Are For"
-    ]
+    q: "Pick our anthem 🎵",
+    options: ["Count on Me", "Lean on Me", "Perfect", "You & Me"]
   },
   {
     q: "What makes you smile the most? 😊",
-    options: [
-      "Unexpected compliments",
-      "Inside jokes",
-      "Surprise calls",
-      "Little gestures"
-    ]
-  },
-  {
-    q: "Our bond is like… 💫",
-    options: [
-      "Coffee & cookies",
-      "Stars & moon",
-      "Netflix & blanket",
-      "Pizza forever"
-    ]
+    options: ["Compliments", "Inside jokes", "Surprises", "Little gestures"]
   }
 ];
-
-let current = 0;
 
 /* Move NO button */
 setInterval(() => {
@@ -114,44 +117,50 @@ setInterval(() => {
   noBtn.style.top = y + "px";
 }, 700);
 
-/* Start questions */
-function startQuestions() {
-  current = 0;
+/* Floating hearts */
+setInterval(() => {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = "💖";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 6000);
+}, 600);
+
+function start() {
+  name = document.getElementById("nameInput").value || "My Love";
+  music.play();
   showQuestion();
 }
 
-/* Show question */
 function showQuestion() {
-  const q = questions[current];
+  const q = questions[index];
   card.innerHTML = `
-    <h1>Question ${current + 1} / ${questions.length}</h1>
+    <h1>Question ${index + 1}/${questions.length}</h1>
     <p>${q.q}</p>
-    ${q.options.map(opt =>
-      `<button class="option" onclick="nextQuestion()">${opt}</button>`
+    ${q.options.map(o =>
+      `<button class="option" onclick="next()">${o}</button>`
     ).join("")}
   `;
 }
 
-/* Next question */
-function nextQuestion() {
-  current++;
-  if (current < questions.length) {
+function next() {
+  index++;
+  if (index < questions.length) {
     showQuestion();
   } else {
-    showFinal();
+    finalQuestion();
   }
 }
 
-/* Final question */
-function showFinal() {
+function finalQuestion() {
   card.innerHTML = `
     <h1>💌 One Last Question 💌</h1>
-    <p>Will you always be my special person? 🥰</p>
+    <p>${name}, will you always be my special person? 🥰</p>
     <button class="yes" onclick="celebrate()">Yes 💖</button>
   `;
 }
 
-/* Celebration */
 function celebrate() {
   document.body.innerHTML = `
     <div style="
@@ -165,19 +174,21 @@ function celebrate() {
       color:white;
       padding:20px;
     ">
-      <h1>🎉 Yayyyy! 🎉</h1>
-      <p>You just made my heart so happy 💕</p>
+      <h1>🎉 Yayyyy ${name}! 🎉</h1>
+      <p>You made my heart so happy 💕</p>
       <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
            style="width:220px;border-radius:15px;margin-top:15px;">
+      <button class="yes" onclick="share()">Share on WhatsApp 📱</button>
     </div>
   `;
+}
+
+function share() {
+  const text = `💖 ${name}, I have something special for you 💖\nCheck this out 👉`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text + location.href)}`);
 }
 </script>
 
 </body>
 </html>
-
-
-
-
-
+  
