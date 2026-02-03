@@ -10,39 +10,32 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-.center {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
 }
 
 .card {
   background: white;
   padding: 30px;
   border-radius: 20px;
-  max-width: 380px;
-  width: 100%;
+  width: 90%;
+  max-width: 360px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 h1 { color: #ff4d6d; }
-p { color: #444; }
 
 button {
   padding: 12px;
-  margin-top: 10px;
+  margin-top: 12px;
   width: 100%;
   border: none;
   border-radius: 25px;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -52,146 +45,55 @@ button {
   background: #ddd;
   position: absolute;
   left: 20px;
-  top: 120px;
-}
-
-.option { background: #ffe3e8; }
-
-/* Floating hearts */
-.heart {
-  position: fixed;
-  bottom: -20px;
-  font-size: 20px;
-  animation: floatUp 6s linear infinite;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-110vh); opacity: 0; }
+  top: 130px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="app" class="center"></div>
+<div class="card" id="card">
+  <h1>💘 yourname, will you be my Valentine? 💘</h1>
+  <button class="yes" onclick="yesClick()">Yes ❤️</button>
+  <button class="no" id="noBtn">No 😢</button>
+</div>
 
 <script>
-const questions = [
-  {
-    q: "What's your idea of a perfect day together? 🌸",
-    options: [
-      "Binge-watching shows with snacks",
-      "Spontaneous adventure",
-      "Heart-to-heart talks",
-      "Just vibing together"
-    ]
-  },
-  {
-    q: "Pick our friendship anthem 🎵",
-    options: [
-      "You've Got a Friend in Me",
-      "Count on Me",
-      "Lean on Me",
-      "That's What Friends Are For"
-    ]
-  },
-  {
-    q: "What makes you smile the most? 😊",
-    options: [
-      "Unexpected compliments",
-      "Inside jokes",
-      "Surprise calls",
-      "Little gestures"
-    ]
-  }
-];
+const noBtn = document.getElementById("noBtn");
+const card = document.getElementById("card");
 
-let stage = "start";
-let index = 0;
-const app = document.getElementById("app");
-
-/* Floating hearts */
+/* Move NO button */
 setInterval(() => {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerText = "💖";
-  h.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 6000);
-}, 600);
+  const x = Math.random() * (card.clientWidth - noBtn.offsetWidth);
+  const y = Math.random() * (card.clientHeight - noBtn.offsetHeight);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}, 700);
 
-function render() {
-
-  /* START SCREEN */
-  if (stage === "start") {
-    app.innerHTML = `
-      <div class="card" id="card">
-        <h1>💘 yourname, will you be my Valentine? 💘</h1>
-        <button class="yes" onclick="startQuestions()">Yes ❤️</button>
-        <button class="no" id="noBtn">No 😢</button>
-      </div>
-    `;
-    moveNo();
-  }
-
-  /* QUESTIONS */
-  if (stage === "questions") {
-    const q = questions[index];
-    app.innerHTML = `
-      <div class="card">
-        <h1>Question ${index + 1}/${questions.length}</h1>
-        <p>${q.q}</p>
-        ${q.options.map(o =>
-          `<button class="option" onclick="nextQ()">${o}</button>`
-        ).join("")}
-      </div>
-    `;
-  }
-
-  /* FINAL */
-  if (stage === "final") {
-    app.innerHTML = `
-      <div class="card">
-        <h1>💌 One Last Question 💌</h1>
-        <p>Will you always be my special person? 🥰</p>
-        <button class="yes" onclick="celebrate()">Yes 💖</button>
-      </div>
-    `;
-  }
-
-  /* CELEBRATION */
-  if (stage === "celebration") {
-    app.innerHTML = `
-      <div class="card">
-        <h1>🎉 Yayyyy! 🎉</h1>
-        <p>You made my heart so happy 💕</p>
-        <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-             style="width:220px;border-radius:15px;margin-top:15px;">
-      </div>
-    `;
-  }
+/* YES click */
+function yesClick() {
+  document.body.innerHTML = `
+    <div style="
+      background:#ff9a9e;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      color:white;
+      padding:20px;
+    ">
+      <h1>💖 Yayyy! 💖</h1>
+      <p>You just made my day special 🥰</p>
+      <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+           style="width:220px;border-radius:15px;margin-top:15px;">
+    </div>
+  `;
 }
+</script>
 
-function moveNo() {
-  const btn = document.getElementById("noBtn");
-  const card = document.getElementById("card");
-  setInterval(() => {
-    btn.style.left = Math.random() * (card.clientWidth - btn.offsetWidth) + "px";
-    btn.style.top = Math.random() * (card.clientHeight - btn.offsetHeight) + "px";
-  }, 700);
-}
+</body>
+</html>
 
-function startQuestions() {
-  stage = "questions";
-  render();
-}
-
-function nextQ() {
-  index++;
-  if (index >= questions.length) stage = "final";
-  render();
-}
-
-function cel
 
