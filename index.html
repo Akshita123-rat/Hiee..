@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>💖 Special Friendship 💖</title>
+<title>Valentine 💖</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -30,6 +30,7 @@ body {
   width: 100%;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;
 }
 
 h1 {
@@ -46,13 +47,20 @@ button {
   cursor: pointer;
 }
 
-.option {
-  background: #ffe3e8;
-}
-
-.primary {
+.yes {
   background: #ff4d6d;
   color: white;
+}
+
+.no {
+  background: #ddd;
+  position: absolute;
+  left: 20px;
+  top: 120px;
+}
+
+.option {
+  background: #ffe3e8;
 }
 
 /* Floating hearts */
@@ -75,6 +83,7 @@ button {
 <div id="app" class="center"></div>
 
 <script>
+/* QUESTIONS */
 const questions = [
   {
     q: "What's your idea of a perfect day together? 🌸",
@@ -102,28 +111,10 @@ const questions = [
       "Surprise visits or calls",
       "Thoughtful little gestures"
     ]
-  },
-  {
-    q: "Our friendship is like... 💫",
-    options: [
-      "Coffee and cookies",
-      "Stars and the moon",
-      "Netflix and blankets",
-      "Pizza and more pizza"
-    ]
-  },
-  {
-    q: "What would you do if I was sad? 🥺",
-    options: [
-      "Bring ice cream",
-      "Send memes",
-      "Give a big hug",
-      "Plan something fun"
-    ]
   }
 ];
 
-let stage = "welcome";
+let stage = "valentine"; // valentine → welcome → questions → final → celebration
 let index = 0;
 const app = document.getElementById("app");
 
@@ -139,16 +130,31 @@ setInterval(() => {
 }, 500);
 
 function render() {
+
+  /* VALENTINE QUESTION */
+  if (stage === "valentine") {
+    app.innerHTML = `
+      <div class="card" id="card">
+        <h1>💘 yourname, will you be my Valentine? 💘</h1>
+        <button class="yes" onclick="yesClick()">Yes ❤️</button>
+        <button class="no" id="noBtn">No 😢</button>
+      </div>
+    `;
+    moveNoButton();
+  }
+
+  /* WELCOME */
   if (stage === "welcome") {
     app.innerHTML = `
       <div class="card">
-        <h1>💖 Hey You! 💖</h1>
-        <p>Ready for something special?</p>
-        <button class="primary" onclick="start()">Start 💕</button>
+        <h1>💖 Yayyy! 💖</h1>
+        <p>I have something special for you…</p>
+        <button class="yes" onclick="start()">Continue 💕</button>
       </div>
     `;
   }
 
+  /* QUESTIONS */
   if (stage === "questions") {
     const q = questions[index];
     app.innerHTML = `
@@ -162,26 +168,47 @@ function render() {
     `;
   }
 
+  /* FINAL QUESTION */
   if (stage === "final") {
     app.innerHTML = `
       <div class="card">
         <h1>💌 One Last Question 💌</h1>
         <p>Will you always be my special person? 🥰</p>
-        <button class="primary" onclick="celebrate()">Yes 💖</button>
+        <button class="yes" onclick="celebrate()">Yes 💖</button>
       </div>
     `;
   }
 
+  /* CELEBRATION */
   if (stage === "celebration") {
     app.innerHTML = `
       <div class="card">
         <h1>🎉 Yayyyy! 🎉</h1>
-        <p>You just made my day extra special 💕</p>
+        <p>You just made my heart so happy 💕</p>
         <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
              style="width:220px;border-radius:15px;margin-top:15px;">
       </div>
     `;
   }
+}
+
+/* Moving NO button */
+function moveNoButton() {
+  const noBtn = document.getElementById("noBtn");
+  const card = document.getElementById("card");
+
+  setInterval(() => {
+    const maxX = card.clientWidth - noBtn.offsetWidth;
+    const maxY = card.clientHeight - noBtn.offsetHeight;
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+  }, 700);
+}
+
+/* Actions */
+function yesClick() {
+  stage = "welcome";
+  render();
 }
 
 function start() {
