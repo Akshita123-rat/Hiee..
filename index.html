@@ -1,113 +1,211 @@
-import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import WelcomeScreen from '@/components/WelcomeScreen';
-import QuestionCard from '@/components/QuestionCard';
-import FinalQuestion from '@/components/FinalQuestion';
-import Celebration from '@/components/Celebration';
-import FloatingHearts from '@/components/FloatingHearts';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>💖 Special Friendship 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-type Stage = 'welcome' | 'questions' | 'final' | 'celebration';
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  min-height: 100vh;
+  overflow: hidden;
+}
 
+.center {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1 {
+  color: #ff4d6d;
+}
+
+button {
+  padding: 12px 20px;
+  margin: 10px 0;
+  width: 100%;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.option {
+  background: #ffe3e8;
+}
+
+.primary {
+  background: #ff4d6d;
+  color: white;
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-110vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app" class="center"></div>
+
+<script>
 const questions = [
   {
-    question: "What's your idea of a perfect day together? 🌸",
+    q: "What's your idea of a perfect day together? 🌸",
     options: [
       "Binge-watching shows with snacks",
       "Going on a spontaneous adventure",
       "Having deep heart-to-heart talks",
-      "Just vibing and doing nothing together",
-    ],
+      "Just vibing and doing nothing together"
+    ]
   },
   {
-    question: "Pick our friendship anthem 🎵",
+    q: "Pick our friendship anthem 🎵",
     options: [
       "You've Got a Friend in Me",
       "Count on Me - Bruno Mars",
       "Lean on Me",
-      "That's What Friends Are For",
-    ],
+      "That's What Friends Are For"
+    ]
   },
   {
-    question: "What makes you smile the most? 😊",
+    q: "What makes you smile the most? 😊",
     options: [
       "Unexpected compliments",
       "Inside jokes only we understand",
       "Surprise visits or calls",
-      "Thoughtful little gestures",
-    ],
+      "Thoughtful little gestures"
+    ]
   },
   {
-    question: "Our friendship is like... 💫",
+    q: "Our friendship is like... 💫",
     options: [
-      "Coffee and cookies - perfect pair!",
-      "Stars and the moon - always together",
-      "Netflix and blankets - cozy forever",
-      "Pizza and more pizza - always wanted!",
-    ],
+      "Coffee and cookies",
+      "Stars and the moon",
+      "Netflix and blankets",
+      "Pizza and more pizza"
+    ]
   },
   {
-    question: "What would you do if I was sad? 🥺",
+    q: "What would you do if I was sad? 🥺",
     options: [
-      "Show up with ice cream immediately",
-      "Send the funniest memes ever",
-      "Give the biggest, warmest hug",
-      "Plan an impromptu fun activity",
-    ],
-  },
+      "Bring ice cream",
+      "Send memes",
+      "Give a big hug",
+      "Plan something fun"
+    ]
+  }
 ];
 
-const Index = () => {
-  const [stage, setStage] = useState<Stage>('welcome');
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+let stage = "welcome";
+let index = 0;
+const app = document.getElementById("app");
 
-  const handleStart = () => {
-    setStage('questions');
-  };
+/* Floating hearts */
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}, 500);
 
-  const handleAnswer = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prev) => prev + 1);
-    } else {
-      setStage('final');
-    }
-  };
+function render() {
+  if (stage === "welcome") {
+    app.innerHTML = `
+      <div class="card">
+        <h1>💖 Hey You! 💖</h1>
+        <p>Ready for something special?</p>
+        <button class="primary" onclick="start()">Start 💕</button>
+      </div>
+    `;
+  }
 
-  const handleYes = () => {
-    setStage('celebration');
-  };
+  if (stage === "questions") {
+    const q = questions[index];
+    app.innerHTML = `
+      <div class="card">
+        <h1>Question ${index + 1}/${questions.length}</h1>
+        <p>${q.q}</p>
+        ${q.options.map(opt =>
+          `<button class="option" onclick="next()">${opt}</button>`
+        ).join("")}
+      </div>
+    `;
+  }
 
-  return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <FloatingHearts />
-      
-      <AnimatePresence mode="wait">
-        {stage === 'welcome' && (
-          <WelcomeScreen key="welcome" onStart={handleStart} />
-        )}
-        
-        {stage === 'questions' && (
-          <div key="questions" className="min-h-screen flex items-center justify-center px-4 py-8">
-            <QuestionCard
-              question={questions[currentQuestion].question}
-              options={questions[currentQuestion].options}
-              onAnswer={handleAnswer}
-              questionNumber={currentQuestion + 1}
-              totalQuestions={questions.length}
-            />
-          </div>
-        )}
-        
-        {stage === 'final' && (
-          <FinalQuestion key="final" onYes={handleYes} />
-        )}
-        
-        {stage === 'celebration' && (
-          <Celebration key="celebration" />
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
+  if (stage === "final") {
+    app.innerHTML = `
+      <div class="card">
+        <h1>💌 One Last Question 💌</h1>
+        <p>Will you always be my special person? 🥰</p>
+        <button class="primary" onclick="celebrate()">Yes 💖</button>
+      </div>
+    `;
+  }
 
-export default Index;
+  if (stage === "celebration") {
+    app.innerHTML = `
+      <div class="card">
+        <h1>🎉 Yayyyy! 🎉</h1>
+        <p>You just made my day extra special 💕</p>
+        <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+             style="width:220px;border-radius:15px;margin-top:15px;">
+      </div>
+    `;
+  }
+}
+
+function start() {
+  stage = "questions";
+  render();
+}
+
+function next() {
+  if (index < questions.length - 1) {
+    index++;
+  } else {
+    stage = "final";
+  }
+  render();
+}
+
+function celebrate() {
+  stage = "celebration";
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
 
