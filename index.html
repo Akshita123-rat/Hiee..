@@ -56,13 +56,55 @@ button {
 
 <div class="card" id="card">
   <h1>💘 yourname, will you be my Valentine? 💘</h1>
-  <button class="yes" onclick="showQuestion()">Yes ❤️</button>
+  <button class="yes" onclick="startQuestions()">Yes ❤️</button>
   <button class="no" id="noBtn">No 😢</button>
 </div>
 
 <script>
 const card = document.getElementById("card");
 const noBtn = document.getElementById("noBtn");
+
+/* QUESTIONS ARRAY */
+const questions = [
+  {
+    q: "What's your idea of a perfect day together? 🌸",
+    options: [
+      "Binge-watching shows with snacks",
+      "Spontaneous adventure",
+      "Heart-to-heart talks",
+      "Just vibing together"
+    ]
+  },
+  {
+    q: "Pick our friendship anthem 🎵",
+    options: [
+      "You've Got a Friend in Me",
+      "Count on Me",
+      "Lean on Me",
+      "That's What Friends Are For"
+    ]
+  },
+  {
+    q: "What makes you smile the most? 😊",
+    options: [
+      "Unexpected compliments",
+      "Inside jokes",
+      "Surprise calls",
+      "Little gestures"
+    ]
+  },
+  {
+    q: "Our bond is like… 💫",
+    options: [
+      "Coffee & cookies",
+      "Stars & moon",
+      "Netflix & blanket",
+      "Pizza forever"
+    ]
+  }
+];
+
+let current = 0;
 
 /* Move NO button */
 setInterval(() => {
@@ -72,18 +114,44 @@ setInterval(() => {
   noBtn.style.top = y + "px";
 }, 700);
 
+/* Start questions */
+function startQuestions() {
+  current = 0;
+  showQuestion();
+}
+
 /* Show question */
 function showQuestion() {
+  const q = questions[current];
   card.innerHTML = `
-    <h1>🌸 One Question 🌸</h1>
-    <p>What makes you smile the most?</p>
-    <button class="option" onclick="celebrate()">You 💕</button>
-    <button class="option" onclick="celebrate()">Little moments ✨</button>
-    <button class="option" onclick="celebrate()">Surprises 🎁</button>
+    <h1>Question ${current + 1} / ${questions.length}</h1>
+    <p>${q.q}</p>
+    ${q.options.map(opt =>
+      `<button class="option" onclick="nextQuestion()">${opt}</button>`
+    ).join("")}
   `;
 }
 
-/* Final celebration */
+/* Next question */
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    showFinal();
+  }
+}
+
+/* Final question */
+function showFinal() {
+  card.innerHTML = `
+    <h1>💌 One Last Question 💌</h1>
+    <p>Will you always be my special person? 🥰</p>
+    <button class="yes" onclick="celebrate()">Yes 💖</button>
+  `;
+}
+
+/* Celebration */
 function celebrate() {
   document.body.innerHTML = `
     <div style="
@@ -97,8 +165,8 @@ function celebrate() {
       color:white;
       padding:20px;
     ">
-      <h1>🎉 Yayyy! 🎉</h1>
-      <p>You made my heart really happy 💖</p>
+      <h1>🎉 Yayyyy! 🎉</h1>
+      <p>You just made my heart so happy 💕</p>
       <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
            style="width:220px;border-radius:15px;margin-top:15px;">
     </div>
@@ -108,6 +176,8 @@ function celebrate() {
 
 </body>
 </html>
+
+
 
 
 
