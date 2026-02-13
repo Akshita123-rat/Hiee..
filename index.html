@@ -1,198 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Valentine 💖</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Galentine?</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* --- COLOR PALETTE --- */
+        :root {
+            --pink-primary: #FFADCB;
+            --pink-dark: #FF85B3;
+            --lavender: #D4C1EC;
+            --cream: #FFF9FB;
+            --text-color: #7A5C61;
+            --white: #ffffff;
+        }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
+        /* --- GLOBAL STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
-#app {
-  position: relative;
-  z-index: 2;
-}
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-color);
+            overflow-x: hidden;
+            text-align: center;
+        }
 
-.card {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 380px;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
+        h1, h2 { font-family: 'Pacifico', cursive; color: var(--pink-dark); }
 
-h1 { color: #ff4d6d; }
-p { color: #444; }
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
+        /* --- BACKGROUND ANIMATION --- */
+        .heart-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
+        }
 
-button {
-  padding: 12px;
-  margin-top: 12px;
-  width: 100%;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
-  cursor: pointer;
-}
+        .floating-heart {
+            position: absolute;
+            color: var(--pink-primary);
+            opacity: 0.5;
+            animation: float 10s infinite linear;
+        }
 
-.yes { background: #ff4d6d; color: white; }
-.option { background: #ffe3e8; }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
-.no {
-  background: #ddd;
-  position: absolute;
-  left: 20px;
-  top: 170px;
-}
+        /* --- MUSIC CONTROL --- */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--white);
+            border: 2px solid var(--pink-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 20px;
+        }
 
-/* 💕 Floating hearts */
-.heart {
-  position: fixed;
-  bottom: -20px;
-  font-size: 22px;
-  animation: floatUp 6s linear infinite;
-  z-index: 1;
-}
+        /* --- LANDING SECTION --- */
+        .landing h1 { font-size: 3.5rem; margin-bottom: 1rem; animation: fadeIn 2s ease-in; }
+        .landing p { font-size: 1.2rem; margin-bottom: 2rem; font-style: italic; }
 
-@keyframes floatUp {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-110vh); opacity: 0; }
-}
-</style>
+        .btn-start {
+            background-color: var(--pink-primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 173, 203, 0.4);
+            transition: transform 0.3s;
+            border: none;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .btn-start:hover { transform: scale(1.1); background-color: var(--pink-dark); }
+
+        /* --- MEMORY SECTION --- */
+        .memory-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 40px 20px;
+            width: 100%;
+            max-width: 1000px;
+            scrollbar-width: none;
+        }
+
+        .memory-container::-webkit-scrollbar { display: none; }
+
+        .memory-card {
+            min-width: 250px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border: 2px solid var(--lavender);
+        }
+
+        .memory-card:hover { transform: translateY(-10px) rotate(2deg); }
+        .memory-card .emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+
+        /* --- THE BIG QUESTION SECTION --- */
+        .question-box {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 60px;
+            align-items: center;
+        }
+
+        .btn-yes {
+            background-color: var(--pink-dark);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .btn-no {
+            background-color: var(--lavender);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        /* --- CELEBRATION SCREEN --- */
+        #celebration {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--cream);
+            z-index: 100;
+            text-align: center;
+        }
+
+        .confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .landing h1 { font-size: 2.5rem; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="app">
-  <div class="card" id="card">
-    <h1>💘 Will you be my Valentine? 💘</h1>
-    <input id="nameInput" placeholder="Enter your name 💕">
-    <button class="yes" onclick="start()">Yes ❤️</button>
-    <button class="no" id="noBtn">No 😢</button>
-  </div>
-</div>
+    <!-- Background Music -->
+    <!-- Using a high-quality instrumental/audio link for 'I Like Me Better' -->
+    <audio id="bgMusic" loop>
+        <source src="song.mp3" type="audio/mpeg">
+        <!-- Note: Replace the URL above with a direct MP3 link to Lauv if you have one. 
+             Most browsers block direct YouTube MP3 links, so a hosted MP3 is best. -->
+    </audio>
 
-<audio id="bgMusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-</audio>
+    <div class="music-control" id="musicToggle" onclick="toggleMusic()">🎵</div>
 
-<script>
-const card = document.getElementById("card");
-const noBtn = document.getElementById("noBtn");
-const music = document.getElementById("bgMusic");
+    <!-- Background Decoration -->
+    <div class="heart-bg" id="heartBg"></div>
 
-let name = "";
-let index = 0;
+    <!-- Section 1: Landing -->
+    <section class="landing">
+        <h1>Will you be my Galentine?</h1>
+        <p>Because life is better with my babygurl 🎀🌸💅. ✨</p>
+        <button onclick="startExperience()" class="btn-start">Start Here 💖</button>
+    </section>
 
-const questions = [
-  {
-    q: "What's your idea of a perfect day together? 🌸",
-    options: ["Movies & snacks", "Adventure", "Deep talks", "Just vibing"]
-  },
-  {
-    q: "Pick our anthem 🎵",
-    options: ["Count on Me", "Lean on Me", "Perfect", "You & Me"]
-  },
-  {
-    q: "What makes you smile the most? 😊",
-    options: ["Compliments", "Inside jokes", "Surprises", "Little gestures"]
-  }
-];
+    <!-- Section 2: Memories -->
+    <section id="memories">
+        <h2 style="margin-bottom: 30px;">Why I love our friendship...</h2>
+        <div class="memory-container">
+            <div class="memory-card">
+                <span class="emoji">😂</span>
+                <h3>Chaotic Laughs</h3>
+                <p>Those temporary characters gave us permanent gossips and laughter.</p>
+            </div>
+            <div class="memory-card">
+                <span class="emoji">🎀</span>
+                <h3>Late Night Talks</h3>
+                <p>Those late night rants and tea spilling sessions that sometimes end up with some deep conversations.</p>
+            </div>
+            <div class="memory-card">
+                <span class="emoji">🌸</span>
+                <h3>My Love</h3>
+                <p>Nobody can love you as much as I can and you know you've found the one when they can beat me in loving you.</p>
+            </div>
+            <div class="memory-card">
+                <span class="emoji">💅</span>
+                <h3>Always Cheering</h3>
+                <p>Nobody can do it better than me remember that babygurl.</p>
+            </div>
+        </div>
+        <a href="#question" class="btn-start" style="margin-top: 40px; background: var(--lavender); color: var(--text-color); text-decoration: none;">One more thing...</a>
+    </section>
 
-/* Move NO button */
-setInterval(() => {
-  if (!noBtn) return;
-  const x = Math.random() * (card.clientWidth - noBtn.offsetWidth);
-  const y = Math.random() * (card.clientHeight - noBtn.offsetHeight);
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
-}, 700);
+    <!-- Section 3: The Question -->
+    <section id="question">
+        <div class="question-box">
+            <h2>So... will you be my Galentine?</h2>
+            <div class="btn-group">
+                <button class="btn-yes" onclick="showCelebration()">YES, obviously!</button>
+                <button class="btn-no" id="noBtn">No</button>
+            </div>
+        </div>
+    </section>
 
-/* 💕 Floating hearts (always running) */
-setInterval(() => {
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerText = "💖";
-  h.style.left = Math.random() * 100 + "vw";
-  document.body.appendChild(h);
-  setTimeout(() => h.remove(), 6000);
-}, 500);
+    <!-- Section 4: Celebration Screen -->
+    <section id="celebration">
+        <canvas class="confetti-canvas" id="confetti"></canvas>
+        <h1 style="font-size: 4rem;">YAY! 🎉</h1>
+        <h2>Galentine’s Date Confirmed.</h2>
+        <div style="margin-top: 30px; font-size: 1.2rem;">
+            <p><strong>When:</strong> Whenever you want jaanemann</p>
+            <p><strong>Where:</strong> Our favorite spot</p>
+            <p style="margin-top: 20px;">I like me better when I'm with you! 💖</p>
+        </div>
+    </section>
 
-/* Start flow */
-function start() {
-  name = document.getElementById("nameInput").value || "My Love";
-  music.play();
-  index = 0;
-  showQuestion();
-}
+    <script>
+        const music = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
 
-function showQuestion() {
-  const q = questions[index];
-  card.innerHTML = `
-    <h1>Question ${index + 1}/${questions.length}</h1>
-    <p>${q.q}</p>
-    ${q.options.map(o =>
-      `<button class="option" onclick="next()">${o}</button>`
-    ).join("")}
-  `;
-}
+        // Function to start music and scroll
+        function startExperience() {
+            music.play();
+            musicToggle.innerText = '⏸️';
+            document.getElementById('memories').scrollIntoView({ behavior: 'smooth' });
+        }
 
-function next() {
-  index++;
-  if (index < questions.length) {
-    showQuestion();
-  } else {
-    finalQuestion();
-  }
-}
+        // Toggle music play/pause
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicToggle.innerText = '⏸️';
+            } else {
+                music.pause();
+                musicToggle.innerText = '🎵';
+            }
+        }
 
-function finalQuestion() {
-  card.innerHTML = `
-    <h1>💌 One Last Question 💌</h1>
-    <p>${name}, will you always be my special person? 🥰</p>
-    <button class="yes" onclick="celebrate()">Yes 💖</button>
-  `;
-}
+        // Floating Hearts Logic
+        const heartBg = document.getElementById('heartBg');
+        const heartIcons = ['❤️', '💖', '✨', '🌸', '💕'];
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heartBg.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 10000);
+        }
+        setInterval(createHeart, 300);
 
-/* 🎉 Celebration screen (SAFE) */
-function celebrate() {
-  card.innerHTML = `
-    <h1>🎉 Yayyyy ${name}! 🎉</h1>
-    <p>You made my heart so happy 💕</p>
-    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-         style="width:220px;border-radius:15px;margin-top:15px;">
-    <button class="yes" onclick="share()">Share on WhatsApp 📱</button>
-  `;
-}
+        // Evasive No Button
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
 
-/* WhatsApp share */
-function share() {
-  const text = `💖 ${name}, I made something special for you 💖\n`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text + location.href)}`);
-}
-</script>
+        // Celebration Logic
+        function showCelebration() {
+            document.getElementById('celebration').style.display = 'flex';
+            initConfetti();
+        }
 
+        function initConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let pieces = [];
+            function update() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (pieces.length < 150) {
+                    pieces.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height - canvas.height,
+                        rotation: Math.random() * 360,
+                        size: Math.random() * 10 + 5,
+                        color: ['#FFADCB', '#FF85B3', '#D4C1EC'][Math.floor(Math.random() * 3)],
+                        speed: Math.random() * 3 + 2
+                    });
+                }
+                pieces.forEach((p, i) => {
+                    p.y += p.speed;
+                    p.rotation += p.speed;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                    if (p.y > canvas.height) pieces[i].y = -20;
+                });
+                requestAnimationFrame(update);
+            }
+            update();
+        }
+    </script>
 </body>
 </html>
-
-  
-
